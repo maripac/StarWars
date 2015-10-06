@@ -27,14 +27,38 @@ Ep5 = read.table("SW_EpisodeV.txt", stringsAsFactors = FALSE)
 Ep6 = read.table("SW_EpisodeVI.txt", stringsAsFactors = FALSE)
 
 # select dialogues
-diags4 = Ep4[,2]
-diags5 = Ep5[,2]
-diags6 = Ep6[,2]
+diags4 = character(0)
+for (a in 1:length(Ep4[,2])) {
+  diags_name <- as.character(Ep4[,2][a])
+  diags4[a] <- diags_name
+}
+diags5 = character(0)
+for (a in 1:length(Ep5[,2])) {
+  diags_name <- as.character(Ep5[,2][a])
+  diags5[a] <- diags_name
+}
+diags6 = character(0)
+for (a in 1:length(Ep6[,2])) {
+  diags_name <- as.character(Ep6[,2][a])
+  diags6[a] <- diags_name
+}
 
 # select characters
-chars4 = Ep4[,1]
-chars5 = Ep5[,1]
-chars6 = Ep6[,1]
+chars4 = character(0)
+for (a in 1:length(Ep4[,1])) {
+  chars_name <- as.character(Ep4[,1][a])
+  chars4[a] <- chars_name
+}
+chars5 = character(0)
+for (a in 1:length(Ep5[,1])) {
+  chars_name <- as.character(Ep5[,1][a])
+  chars5[a] <- chars_name
+}
+chars6 = character(0)
+for (a in 1:length(Ep6[,1])) {
+  chars_name <- as.character(Ep6[,1][a])
+  chars6[a] <- chars_name
+}
 
 # how many dialogues in each episode
 n4 = length(diags4)
@@ -77,7 +101,7 @@ names(top_char_diags) = aux_top_chars
 diag_corpus = Corpus(VectorSource(top_char_diags))
 
 # apply some text transformations
-diag_corpus = tm_map(diag_corpus, tolower)
+diag_corpus = tm_map(diag_corpus, content_transformer(tolower))
 diag_corpus = tm_map(diag_corpus, removeWords, 
                      c(stopwords("english"),"comlink"))
 diag_corpus = tm_map(diag_corpus, removeNumbers)
@@ -90,7 +114,7 @@ diag_dtm = DocumentTermMatrix(diag_corpus)
 # (90% sparsity, which means a lot of empty cells)
 diag_dtm
 dim(diag_dtm)
-
+row.names(diag_dtm) = aux_top_chars
 # convert as matrix
 diag_mat = as.matrix(diag_dtm)
 
@@ -165,6 +189,7 @@ write.table(E(graph_chars2)$weight, "weight_edges_graph2.txt")
 # using the arcDiagram function
 
 # arc-diagram using default parameters (not very interesting)
+source("../Rscripts/arcDiagram.R")
 arcDiagram(edges1, cex=0.8, mar=c(7,1,4,1))
 title("Preliminary arc-diagram", cex.main=0.9)
 
@@ -195,6 +220,7 @@ title("Preliminary arc-diagram", cex.main=0.9)
 # arc-diagram with pie charts on nodes
 # color bands (of episodes VI, V, IV)
 #col.pies = c("#C7F464", "#4ECDC4", "#556270")
+source("../Rscripts/arcPies.R")
 col.pies = c("#C7F464", "#4ECDC4", "#6d849c")
 
 # arc-diagram with pie charts
@@ -216,6 +242,7 @@ legend(x=0.9, y=0.5, title="Episodes", text.col="gray65", cex=0.8,
 # arc-diagram with bands on nodes
 # color bands (of episodes VI, V, IV)
 #col.bands = c("#C7F464", "#4ECDC4", "#556270")
+source("../Rscripts/arcBands.R")
 col.bands = c("#C7F464", "#4ECDC4", "#6d849c")
 # arc-diagram with bands
 arcBands(edges1, top_chars_by_eps, col.bands=col.bands, 

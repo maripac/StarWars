@@ -29,9 +29,23 @@ diags5 = Ep5[,2]
 diags6 = Ep6[,2]
 
 # select characters
-chars4 = Ep4[,1]
-chars5 = Ep5[,1]
-chars6 = Ep6[,1]
+chars4 = character(0)
+for (a in 1:length(Ep4[,1])) {
+  chars_name <- as.character(Ep4[,1][a])
+  chars4[a] <- chars_name
+}
+
+chars5 = character(0)
+for (a in 1:length(Ep5[,1])) {
+  chars_name <- as.character(Ep5[,1][a])
+  chars5[a] <- chars_name
+}
+
+chars6 = character(0)
+for (a in 1:length(Ep6[,1])) {
+  chars_name <- as.character(Ep6[,1][a])
+  chars6[a] <- chars_name
+}
 
 # how many dialogues in each episode
 n4 = length(diags4)

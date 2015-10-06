@@ -26,14 +26,42 @@ Ep5 = read.table("SW_EpisodeV.txt")
 Ep6 = read.table("SW_EpisodeVI.txt")
 
 # select dialogues
-diags4 = Ep4[,2]
-diags5 = Ep5[,2]
-diags6 = Ep6[,2]
+diags4 = character(0)
+for (a in 1:length(Ep4[,2])) {
+  diags_name <- as.character(Ep4[,2][a])
+  diags4[a] <- diags_name
+}
+
+diags5 = character(0)
+for (a in 1:length(Ep5[,2])) {
+  diags_name <- as.character(Ep5[,2][a])
+  diags5[a] <- diags_name
+}
+
+diags6 = character(0)
+for (a in 1:length(Ep6[,2])) {
+  diags_name <- as.character(Ep6[,2][a])
+  diags6[a] <- diags_name
+}
 
 # select characters
-chars4 = Ep4[,1]
-chars5 = Ep5[,1]
-chars6 = Ep6[,1]
+chars4 = character(0)
+for (a in 1:length(Ep4[,1])) {
+  chars_name <- as.character(Ep4[,1][a])
+  chars4[a] <- chars_name
+}
+
+chars5 = character(0)
+for (a in 1:length(Ep5[,1])) {
+  chars_name <- as.character(Ep5[,1][a])
+  chars5[a] <- chars_name
+}
+
+chars6 = character(0)
+for (a in 1:length(Ep6[,1])) {
+  chars_name <- as.character(Ep6[,1][a])
+  chars6[a] <- chars_name
+}
 
 # import 'top_chars_by_eps.txt'
 top_chars_by_eps = read.table("top_chars_by_eps.txt")
@@ -63,7 +91,7 @@ names(diag4_top_chars) = top_chars_eps4
 diag4_corpus = Corpus(VectorSource(diag4_top_chars))
 
 # apply text transformatioins
-diag4_corpus = tm_map(diag4_corpus, tolower)
+diag4_corpus = tm_map(diag4_corpus, content_transformer(tolower))
 diag4_corpus = tm_map(diag4_corpus, removeWords, 
                      c(stopwords("english"),"comlink"))
 diag4_corpus = tm_map(diag4_corpus, removeNumbers)
@@ -83,6 +111,7 @@ for (j in 1:ncol(diag4_tdm))
   diag4_top_terms[[j]] = head(aux, 10)
 }
 names(diag4_top_terms) = colnames(diag4_tdm)
+colnames(diag4_tdm) = top_chars_eps4
 
 
 # =====================================================================
@@ -107,7 +136,7 @@ names(diag5_top_chars) = top_chars_eps5
 diag5_corpus = Corpus(VectorSource(diag5_top_chars))
 
 # apply text transformations
-diag5_corpus = tm_map(diag5_corpus, tolower)
+diag5_corpus = tm_map(diag5_corpus, content_transformer(tolower))
 diag5_corpus = tm_map(diag5_corpus, removeWords, 
                       c(stopwords("english"),"comlink"))
 diag5_corpus = tm_map(diag5_corpus, removeNumbers)
@@ -127,6 +156,7 @@ for (j in 1:ncol(diag5_tdm))
   diag5_top_terms[[j]] = head(aux, 10)
 }
 names(diag5_top_terms) = colnames(diag5_tdm)
+colnames(diag5_tdm) = top_chars_eps5
 
 
 # =====================================================================
@@ -151,7 +181,7 @@ names(diag6_top_chars) = top_chars_eps6
 diag6_corpus = Corpus(VectorSource(diag6_top_chars))
 
 # apply text transformations
-diag6_corpus = tm_map(diag6_corpus, tolower)
+diag6_corpus = tm_map(diag6_corpus, content_transformer(tolower))
 diag6_corpus = tm_map(diag6_corpus, removeWords, 
                       c(stopwords("english"),"comlink"))
 diag6_corpus = tm_map(diag6_corpus, removeNumbers)
@@ -171,6 +201,8 @@ for (j in 1:ncol(diag6_tdm))
   diag6_top_terms[[j]] = head(aux, 10)
 }
 names(diag6_top_terms) = colnames(diag6_tdm)
+colnames(diag6_tdm) = top_chars_eps6
+
 
 
 # =====================================================================
@@ -193,6 +225,7 @@ ntc4 = length(top_chars_eps4)
 ntc5 =length(top_chars_eps5)
 ntc6 =length(top_chars_eps6)
 eps = c(rep(4,ntc4), rep(5,ntc5), rep(6,ntc6))
+rownames(X) <- c(top_chars_eps4, top_chars_eps5, top_chars_eps6)
 
 # add flag vector of episodes
 X = cbind(X, eps)
